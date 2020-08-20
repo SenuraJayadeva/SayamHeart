@@ -67,4 +67,20 @@ router.delete("/", auth, async (req, res) => {
   }
 });
 
+// @route         GET /shop
+// @description   get Shop Items
+// @access        Private
+router.get("/", async (req, res) => {
+  //convert image to base 64
+  // const image = Buffer.from(req.user.avatar).toString("base64");
+  // res.send({ user: req.user, avatar: image });
+  //console.log(image);
+
+  Shop.find()
+    .then((items) => {
+      res.json(items);
+    })
+    .catch((err) => res.status(400).json("Error: " + err));
+});
+
 module.exports = router;
