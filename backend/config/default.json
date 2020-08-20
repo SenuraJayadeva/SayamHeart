@@ -1,5 +1,5 @@
 {
-  "mongoURL": "mongodb+srv://FitnessClub:fitnessclub2020@fitnessclub.cpjwg.mongodb.net/FitnessClub?retryWrites=true&w=majority",
+  "mongoURL": "mongodb+srv://Senura:Mongodb8864@cluster0-0uinm.gcp.mongodb.net/sayamheart?retryWrites=true&w=majority",
 
   "jwtSecret": "mysecrettoken"
 }
