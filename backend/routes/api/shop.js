@@ -16,29 +16,55 @@ router.use(cors());
 //@access Private
 //to protect auth add as the second parameter
 
-router.post("/", auth, upload.single("ItemImage"), (req, res) => {
-  //For Image Uploading(Getting image)
-  const upload = multer({
-    limits: {
-      fileSize: 4000000,
-    },
-    fileFilter(req, file, cb) {
-      if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
-        return cb(new Error("File is not supported"));
-      }
-      cb(undefined, true);
-    },
-  });
+//For Image Uploading(Getting image)
+const upload = multer({
+  limits: {
+    fileSize: 4000000,
+  },
+  fileFilter(req, file, cb) {
+    if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
+      return cb(new Error("File is not supported"));
+    }
+    cb(undefined, true);
+  },
+});
+
+router.post("/", auth, upload.single("ItemImage"), async (req, res) => {
+  // image configuration
+  const ItemImage = await sharp(req.file.buffer)
+    .resize({ width: 250, height: 250 })
+    .png()
+    .toBuffer();
 
   const ItemName = req.body.ItemName;
   const ItemPrice = req.body.ItemPrice;
   const ItemDescription = req.body.ItemDescription;
 
-  const newShop = new Shop({ ItemName, ItemPrice, ItemDescription });
+  const newShop = new Shop({ ItemName, ItemPrice, ItemDescription, ItemImage });
 
   //Save Data into the mongo database
 
   newShop
     .save()
     .then(() => res.json("Item Added"))
-    .catch((err) => res.
+    .catch((err) => res.status(400).json("Error: " + err));
+});
+
+//@route  DELETE api/shop
+//@desc  Delete Item
+//@access Private
+//@author Senura
+
+router.delete("/", auth, async (req, res) => {
+  try {
+    //Remove Workout
+    await Shop.findOneAndRemove({ _id: req.body.id });
+
+    res.json({ msg: "Item Deleted" });
+  } catch (err) {
+    console.log(err.message);
+    res.status(500).send("Server Error");
+  }
+});
+
+module.exports = router;

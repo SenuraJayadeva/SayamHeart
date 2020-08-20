@@ -15,6 +15,10 @@ const ShopSchema = new Schema({
     type: String,
     required: true,
   },
+  ItemImage: {
+    type: Buffer,
+    required: true,
+  },
 });
 
 const Shop = mongoose.model("shop", ShopSchema);
